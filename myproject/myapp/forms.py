@@ -27,11 +27,16 @@ class QuestionnairesUpdateForm(forms.ModelForm):
 
 class CommentForm(forms.ModelForm):
 	class Meta:
-		models = Comment
-		fields = '__all__'
+		model = Comment
+		fields = ('text',)
 
 
 class AceptQuestionnairesForm(forms.ModelForm):
+	class Meta:
+		model = Questionnaires
+		fields = '__all__'
+
+class RejectQuestionnairesForm(forms.ModelForm):
 	class Meta:
 		model = Questionnaires
 		fields = '__all__'

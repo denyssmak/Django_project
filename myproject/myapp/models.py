@@ -17,5 +17,8 @@ class Questionnaires(models.Model):
 		return f'{self.user} | {self.importance} | {self.title} | status: {self.status}'
 
 class Comment(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	questionnaires = models.ForeignKey(Questionnaires, on_delete=models.CASCADE, related_name='comment_questionnaires')
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_user')
 	text = models.TextField()
+	def __str__(self):
+		return f'{self.user} | {self.text}'

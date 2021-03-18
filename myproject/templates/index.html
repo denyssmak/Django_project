@@ -18,19 +18,19 @@
 		{% for questionnaires in questionnaires_list %}
 			{{ questionnaires }} |
 			<a href="{% url 'questionnaires_update' questionnaires.pk %}">Измененить анкету</a><br>
-		{% endfor%}
-			{% if user.is_superuser %}
-				{% for questionnaires in questionnaires_create_return %}
+			<a href="{% url 'comments' questionnaires.pk %}">Добавить комментарий</a>
+			<br>{{questionnaires.comment_questionnaires.all}}
+			{% if request.user.is_superuser %}
 				<form method="post" action="{% url 'acept_questionnaires' questionnaires.pk %}">
 				{% csrf_token %}
 				<input type="submit" value="Принять">	
 				</form>
 				<form method="post" action="{% url 'reject_questionnaires' questionnaires.pk %}">
 				{% csrf_token %}
-    			<input type="submit" value="Отклонить">
+				<input type="submit" value="Отклонить">	
 				</form>
-				{% endfor%}
 			{% endif %}
+		{% endfor %}
 	{% else %}
 		<h4><a href="{% url 'register_page' %}">регистрация</a></h4>
 		<h4><a href="{% url 'login_page' %}">авторизация</a></h4>

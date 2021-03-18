@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, View
 from .models import Questionnaires, Comment
 from django.contrib.auth import authenticate, login
-from .forms import QuestionnairesCreateForm, QuestionnairesUpdateForm, CommentForm, AceptQuestionnairesForm
+from .forms import QuestionnairesCreateForm, RejectQuestionnairesForm, QuestionnairesUpdateForm, CommentForm, AceptQuestionnairesForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
@@ -35,7 +35,7 @@ class QuestionnairesListView(ListView):
 
 
 class QuestionnairesCreateView(CreateView):
-	models = Questionnaires
+	model = Questionnaires
 	form_class = QuestionnairesCreateForm
 	template_name = 'questionnaires_create.html'
 	success_url = reverse_lazy('index')
@@ -53,7 +53,7 @@ class QuestionnairesUpdateVirw(TestUserPermissionUpdate, UpdateView):
 
 
 class RegisterUserView(CreateView):
-	models = User
+	model = User
 	form_class = UserCreationForm
 	template_name = 'register.html'
 	success_url = reverse_lazy('index')
@@ -72,10 +72,25 @@ class MyUserlogoutView(LogoutView):
 
 
 class CommentView(CreateView):
-	models = Comment
+	model = Comment
 	form_class = CommentForm
 	template_name = 'comments.html'
 	success_url = reverse_lazy('index')
+
+	def form_valid(self, form):
+		object = form.save(commit=False)
+		object.user = self.request.user
+		questionnaires = Questionnaires.objects.get(id=self.kwargs['pk'])
+		if questionnaires.status is False:
+			raise ValueError('DOWN')  
+		object.questionnaires = questionnaires
+		object.save()
+		return super().form_valid(form=form)
+			
+
+
+
+
 
 class AceptQuestionnairesView(CreateView):
 	model = Questionnaires
@@ -85,7 +100,14 @@ class AceptQuestionnairesView(CreateView):
 
 	def form_valid(self, form):
 		object = form.save(commit=False)
-		questionnaires = Questionnaires.objects.get(id=self.request.POST['acept_questionnaires'])
-		object.acept_questionnaires = questionnaires
-		object.save()
+		object.user = self.request.user
 		return super().form_valid(form=form)
+
+
+class RejectQuestionnairesView(DeleteView):
+	model = Questionnaires
+	success_url = reverse_lazy('index')
+	template_name = 'reject_questionnaires.html'
+	form_class = RejectQuestionnairesForm
+	def post(self, request, *args, **kwargs):
+		return super().post(request, *args, **kwargs)
