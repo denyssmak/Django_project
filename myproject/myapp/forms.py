@@ -32,9 +32,13 @@ class CommentForm(forms.ModelForm):
 
 
 class AceptQuestionnairesForm(forms.ModelForm):
+	consideration = forms.HiddenInput()
 	class Meta:
 		model = Questionnaires
-		fields = '__all__'
+		fields = ('consideration',)
+
+
+
 
 class RejectQuestionnairesForm(forms.ModelForm):
 	class Meta:

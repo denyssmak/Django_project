@@ -13,9 +13,21 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMi
 
 
 class TestUserPermissionUpdate(UserPassesTestMixin):                         
-    def test_func(self):                                                       
-        return self.request.user == self.get_object().user
+	def test_func(self):                                                       
+		return self.request.user == self.get_object().user
 
+# class PermissionConsideration(UserPassesTestMixin):                         
+# 	def test_func(self):                                                       
+# 		if self.object.consideration:
+# 			messages.error(self.request, 'Заявку приняли!')
+# 			return redirect('/')
+# 		elif self.object.consideration is False:
+# 			messages.error(self.request, 'Заявку отклонили!')
+# 			return redirect('/')
+# 		else:
+# 			object = form.save(commit=False)
+# 			object.consideration = True
+# 		return super().form_valid(form=form)
 
 class QuestionnairesView(ListView):
 	model = Questionnaires
@@ -82,32 +94,70 @@ class CommentView(CreateView):
 		object.user = self.request.user
 		questionnaires = Questionnaires.objects.get(id=self.kwargs['pk'])
 		if questionnaires.status is False:
-			raise ValueError('DOWN')  
+			raise ValueError('403')  
 		object.questionnaires = questionnaires
 		object.save()
 		return super().form_valid(form=form)
 			
 
 
-
-
-
-class AceptQuestionnairesView(CreateView):
+class AceptQuestionnairesView(UpdateView):
 	model = Questionnaires
 	success_url = reverse_lazy('index')
 	template_name = 'acept_questionnaires.html'
 	form_class = AceptQuestionnairesForm
 
 	def form_valid(self, form):
-		object = form.save(commit=False)
-		object.user = self.request.user
+		if self.get_object().consideration:
+			messages.error(self.request, 'Заявку приняли!')
+			return redirect('/')
+		elif self.get_object().consideration is False:
+			messages.error(self.request, 'Заявку отклонили!')
+			return redirect('/')
+		else:
+			object = form.save(commit=False)
+			object.consideration = True
 		return super().form_valid(form=form)
 
 
-class RejectQuestionnairesView(DeleteView):
-	model = Questionnaires
+class RejectQuestionnairesView(CreateView):
+	model = Comment
 	success_url = reverse_lazy('index')
 	template_name = 'reject_questionnaires.html'
-	form_class = RejectQuestionnairesForm
+	form_class = CommentForm
+
 	def post(self, request, *args, **kwargs):
+		pk = kwargs['pk']
+		questionnaires = Questionnaires.objects.get(id=pk)
+		if questionnaires.consideration:
+			messages.error(request, 'Заявку приняли!')
+			return redirect('/')
+		elif questionnaires.consideration is False:
+			messages.error(request, 'Заявку отклонили!')
+			return redirect('/')
 		return super().post(request, *args, **kwargs)
+
+	# def get_succes_url(self):
+	# 	object = self.get_object()
+	# 	return reverse_lazy('comments', args=[object.pk])
+	# def post(self, request, *args, **kwargs):
+	# 	return super().post(request, *args, **kwargs)
+	def form_valid(self, form):
+		pk = self.kwargs['pk']
+		questionnaires = Questionnaires.objects.get(id=pk)
+		object = form.save(commit=False)
+		object.questionnaires = questionnaires
+		object.user = self.request.user
+		questionnaires.consideration = False
+		questionnaires.save()
+		return super().form_valid(form=form)
+		# if self.get_object().consideration:
+		# 	messages.error(self.request, 'Заявку приняли!')
+		# 	return redirect('/')
+		# elif self.get_object().consideration is False:
+		# 	messages.error(self.request, 'Заявку отклонили!')
+		# 	return redirect('/')
+		# else:
+		# 	object = form.save(commit=False)
+		# 	object.consideration = False
+		# return super().form_valid(form=form)

@@ -8,6 +8,11 @@
 <body>
 {% extends 'base.html' %}
 {% block content %}
+{% if messages %}
+{% for message in messages %}
+	<h2 style="color: red;">{{ message|safe }}</h2>
+{% endfor %}
+{% endif %}
 	{% if request.user.is_authenticated %}
 		<h3>{{ request.user }}</h3>
 		<h4><a href="{% url 'logout_page' %}">выйти</a></h4>
