@@ -2,16 +2,6 @@ from django import forms
 from .models import Questionnaires, Comment
 from django.contrib.auth.forms import AuthenticationForm
 
-# class QuestionnairesCreateForm(forms.ModelForm):
-# 	class Meta:
-# 		model = Questionnaires
-# 		fields = ('importance', 'title', 'text', 'status')
-# 	def save(self, commit=True):
-# 		questionnaires = super().save(commit=False)
-# 		if commit:
-# 			questionnaires.save()
-# 		return questionnaires 
-
 
 class QuestionnairesCreateForm(forms.ModelForm):
 	class Meta:
@@ -38,9 +28,13 @@ class AceptQuestionnairesForm(forms.ModelForm):
 		fields = ('consideration',)
 
 
-
-
 class RejectQuestionnairesForm(forms.ModelForm):
 	class Meta:
 		model = Questionnaires
 		fields = '__all__'
+
+
+class RepairQuestionnairesForm(forms.ModelForm):
+	class Meta:
+		model = Questionnaires
+		fields = ('repair',)

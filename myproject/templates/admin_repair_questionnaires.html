@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if request.user.is_superuser %}
+	{% for questionnaire in questionnaires %}
+		{% if questionnaire.consideration is False %}
+			{% if questionnaire.repair is not True %}
+			{{questionnaire}}
+			<form method="post" action="{% url 'admin_acept_repair_questionnaires' 	questionnaire.pk %}">
+			{% csrf_token %}
+			<input type="submit" value="Принять">	
+			</form>
+			<form method="post" action="{% url 'admin_reject_repair_questionnaires' 	questionnaire.pk %}">
+			{% csrf_token %}
+			<input type="submit" value="Отклонить">	
+			</form>
+			{% endif %}
+		{% endif %}
+	{% endfor %}
+{% endif %}
+{% endblock %}

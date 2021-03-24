@@ -13,9 +13,11 @@ class Questionnaires(models.Model):
 	text = models.TextField()
 	status = models.BooleanField(default=True)
 	consideration = models.BooleanField(null=True, blank=True)
+	repair = models.BooleanField(null=True, blank=True)
+
 
 	def __str__(self):
-		return f'{self.user} | {self.importance} | {self.title} | status: {self.status}'
+		return f'{self.user} | {self.importance} | {self.title} | status: {self.status} |consideration: {self.consideration} |repair: {self.repair}'
 
 class Comment(models.Model):
 	questionnaires = models.ForeignKey(Questionnaires, on_delete=models.CASCADE, related_name='comment_questionnaires')

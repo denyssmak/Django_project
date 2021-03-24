@@ -1,5 +1,5 @@
 from django.urls import include, path
-from .views import QuestionnairesCreateView, AceptQuestionnairesView, RejectQuestionnairesView, CommentView, QuestionnairesView, RegisterUserView, MyloginView, MyUserlogoutView, QuestionnairesListView, QuestionnairesUpdateVirw
+from .views import QuestionnairesCreateView, AceptQuestionnairesView, RejectQuestionnairesView, CommentView, QuestionnairesView, RegisterUserView, MyloginView, MyUserlogoutView, QuestionnairesListView, QuestionnairesUpdateVirw, RepairQuestionnairesView, AdminRepairQuestionnairesView, AdminAceptRepairQuestionnairesView, AdminRejectRepairQuestionnairesView
 
 	
 urlpatterns = [
@@ -13,4 +13,8 @@ urlpatterns = [
     path('comments/<int:pk>/', CommentView.as_view(), name='comments'),
     path('acept_questionnaires/<int:pk>/', AceptQuestionnairesView.as_view(), name='acept_questionnaires'),
 	path('reject_questionnaires/<int:pk>/', RejectQuestionnairesView.as_view(), name='reject_questionnaires'),
+	path('repair_questionnaires/<int:pk>/', RepairQuestionnairesView.as_view(), name='repair_questionnaires'),
+	path('admin_repair_questionnaires/', AdminRepairQuestionnairesView.as_view(), name='admin_repair_questionnaires'),
+	path('admin_acept_repair_questionnaires/<int:pk>/', AdminAceptRepairQuestionnairesView.as_view(), name='admin_acept_repair_questionnaires'),
+	path('admin_reject_repair_questionnaires/<int:pk>/', AdminRejectRepairQuestionnairesView.as_view(), name='admin_reject_repair_questionnaires'),
 ]

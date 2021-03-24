@@ -17,14 +17,14 @@
 		<h3>{{ request.user }}</h3>
 		<h4><a href="{% url 'logout_page' %}">выйти</a></h4>
 		<a href="{% url 'questionnaires_create' %}">Cоздать анкету</a><br>
-		{% for questionnaires in questionnaires_create %}
-			{{ questionnaires }} |	
-		{% endfor %}
 		{% for questionnaires in questionnaires_list %}
-			{{ questionnaires }} |
+			{% if questionnaires.repair is not True %}
+				<p>{{ questionnaires }}</p>
 			<a href="{% url 'questionnaires_update' questionnaires.pk %}">Измененить анкету</a><br>
-			<a href="{% url 'comments' questionnaires.pk %}">Добавить комментарий</a>
-			<br>{{questionnaires.comment_questionnaires.all}}
+			<a href="{% url 'comments' questionnaires.pk %}">Добавить комментарий</a><br>
+			{% if questionnaires.comment_questionnaires.all %}
+				{{questionnaires.comment_questionnaires.all}}
+			{% endif %}
 			{% if request.user.is_superuser %}
 				<form method="post" action="{% url 'acept_questionnaires' questionnaires.pk %}">
 				{% csrf_token %}
@@ -34,11 +34,22 @@
 				{% csrf_token %}
 				<input type="submit" value="Отклонить">	
 				</form>
+			{% else %}
+			    {% if questionnaires.consideration is False %}
+					<form method="post" action="{% url 'repair_questionnaires' questionnaires.pk %}">
+					{% csrf_token %}
+					<input type="submit" value="Восстоновить">	
+					</form>
+				{% endif %}
+			{% endif %}
 			{% endif %}
 		{% endfor %}
 	{% else %}
 		<h4><a href="{% url 'register_page' %}">регистрация</a></h4>
 		<h4><a href="{% url 'login_page' %}">авторизация</a></h4>
+	{% endif %}
+	{% if request.user.is_superuser %}
+		<h4><a href="{% url 'admin_repair_questionnaires' %}">Восстовить заявки</a></h4>
 	{% endif %}
 {% endblock %}
 </body>
