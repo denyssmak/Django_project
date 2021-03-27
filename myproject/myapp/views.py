@@ -45,7 +45,7 @@ class QuestionnairesCreateView(CreateView):
         return super().form_valid(form=form)
 
 
-class QuestionnairesUpdateVirw(TestUserPermissionUpdate, UpdateView):
+class QuestionnairesUpdateView(TestUserPermissionUpdate, UpdateView):
     model = Questionnaires
     template_name = 'questionnaires_update.html'
     success_url = reverse_lazy('index')

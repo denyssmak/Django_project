@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.utils import timezone
 
 IMPORTANCE_CHOICE = (('low','low'),
 				('middle','middle'),
 				('high','high'))
-
 
 class Questionnaires(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -25,3 +26,6 @@ class Comment(models.Model):
 	text = models.TextField()
 	def __str__(self):
 		return f'{self.user} | {self.text}'
+
+class MyToken(Token):
+    time_to_die = models.DateTimeField(default=timezone.now)
