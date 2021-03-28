@@ -23,7 +23,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['password'] != data['password2']:
-            raise serializers.ValidationError('?')
+            raise serializers.ValidationError('Пароль не совподает')
         return data
 
 class QuestionnairesSerializer(serializers.ModelSerializer):
@@ -31,3 +31,16 @@ class QuestionnairesSerializer(serializers.ModelSerializer):
         model = Questionnaires
         fields = ('id', 'importance', 'title', 'text', 'status',)
         read_only = ('id')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'questionnaires')
+        read_only = ('id')
+
+    # def validate(self, data):
+    #     status = data['status']
+    #     if status is False:
+    #         raise serializers.ValidationError("403")
+    #     return data
