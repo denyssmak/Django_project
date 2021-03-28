@@ -1,7 +1,7 @@
 from django.urls import include, path
 from myapp.views import QuestionnairesCreateView, AceptQuestionnairesView, RejectQuestionnairesView, CommentView, QuestionnairesView, RegisterUserView, MyloginView, MyUserlogoutView, QuestionnairesListView, QuestionnairesUpdateView, RepairQuestionnairesView, AdminRepairQuestionnairesView, AdminAceptRepairQuestionnairesView, AdminRejectRepairQuestionnairesView
 from rest_framework import routers
-from myapp.api.resources import RegisterUserViewSet, QuestionnairesViewSet, CommentViewSet
+from myapp.api.resources import RegisterUserViewSet, QuestionnairesViewSet, CommentViewSet, CustomAuthToken
 from myapp.models import Questionnaires, Comment
 
 router = routers.SimpleRouter()
@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin_acept_repair_questionnaires/<int:pk>/', AdminAceptRepairQuestionnairesView.as_view(), name='admin_acept_repair_questionnaires'),
     path('admin_reject_repair_questionnaires/<int:pk>/', AdminRejectRepairQuestionnairesView.as_view(), name='admin_reject_repair_questionnaires'),
     path('api/', include(router.urls)),
+    path('api-token-auth/', CustomAuthToken.as_view()),
     path('api-auth/', include('rest_framework.urls')),
 ]
 
