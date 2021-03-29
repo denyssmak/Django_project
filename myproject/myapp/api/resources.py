@@ -8,7 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import exceptions
 from django.utils import timezone
 from datetime import timedelta
-from myapp.api.permissions import CommentPermisson
+from myapp.api.permissions import CommentPermisson, QuestionnairesUpdatePermisson
 from rest_framework.authtoken.views import ObtainAuthToken
 
 
@@ -50,7 +50,7 @@ class RegisterUserViewSet(viewsets.ModelViewSet):
 
 
 class QuestionnairesViewSet(viewsets.ModelViewSet):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, QuestionnairesUpdatePermisson]
     authentication_classes = [CustomTokenAuthentication]
     queryset = Questionnaires.objects.all()
     serializer_class = QuestionnairesSerializer
