@@ -1,6 +1,6 @@
 from myapp.models import Questionnaires, Comment, MyToken
 from django.contrib.auth.models import User
-from myapp.api.serializers import RegisterUserSerializer, QuestionnairesSerializer, CommentSerializer                          
+from myapp.api.serializers import RegisterUserSerializer, QuestionnairesSerializer, CommentSerializer, QuestionnairesListSerializer                         
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -70,5 +70,9 @@ class CommentViewSet(viewsets.ModelViewSet):
         user = self.request.user
         serializer.save(user=user)
 
+class QuestionnairesListViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Questionnaires.objects.all()
+    serializer_class = QuestionnairesListSerializer
+    authentication_classes = [CustomTokenAuthentication]
 
-         

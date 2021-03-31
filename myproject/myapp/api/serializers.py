@@ -37,3 +37,17 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'questionnaires')
         read_only = ('id')
 
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'text',)
+        read_only = ('id')
+
+
+class QuestionnairesListSerializer(serializers.ModelSerializer):
+    comment_questionnaires = CommentsSerializer(read_only=True, many=True)
+    class Meta:
+        model = Questionnaires
+        fields = ('id', 'importance', 'title', 'text', 'status', 'comment_questionnaires')
+        read_only = ('id')

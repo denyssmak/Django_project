@@ -1,13 +1,14 @@
 from django.urls import include, path
 from myapp.views import QuestionnairesCreateView, AceptQuestionnairesView, RejectQuestionnairesView, CommentView, QuestionnairesView, RegisterUserView, MyloginView, MyUserlogoutView, QuestionnairesListView, QuestionnairesUpdateView, RepairQuestionnairesView, AdminRepairQuestionnairesView, AdminAceptRepairQuestionnairesView, AdminRejectRepairQuestionnairesView
 from rest_framework import routers
-from myapp.api.resources import RegisterUserViewSet, QuestionnairesViewSet, CommentViewSet, CustomAuthToken
+from myapp.api.resources import RegisterUserViewSet, QuestionnairesViewSet, CommentViewSet, CustomAuthToken, QuestionnairesListViewSet
 from myapp.models import Questionnaires, Comment
 
 router = routers.SimpleRouter()
 router.register(r'registers', RegisterUserViewSet)
 router.register(r'questionnaires', QuestionnairesViewSet)
 router.register(r'comments', CommentViewSet)
+router.register(r'questionnaireslist', QuestionnairesListViewSet)
 
 urlpatterns = [
     path('', QuestionnairesView.as_view(), name='index'),
