@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-
+from django.utils import timezone 
 
 class TestUserPermissionUpdate(UserPassesTestMixin):                         
     def test_func(self):                                                       
@@ -65,6 +65,10 @@ class MyloginView(LoginView):
     success_url = reverse_lazy('index')
     def get_success_url(self):
         return self.success_url
+
+    def form_valid(self, form):
+        self.request.session['time_action'] = str(timezone.now())
+        return super().form_valid(form=form)
 
 
 class MyUserlogoutView(LogoutView):

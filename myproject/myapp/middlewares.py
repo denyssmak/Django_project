@@ -5,12 +5,14 @@ from datetime import timedelta, datetime
 from django.utils import timezone
 
 
+
+
 class TimeActionMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if 'time_action' in request.session:
             date = datetime.strptime(request.session['time_action'], '%Y-%m-%d %H:%M:%S.%f')
-            if not request.user.is_superuser and date + timedelta(minutes=5) < timezone.now():
+            if not request.user.is_superuser and date + timedelta(minutes=1) < timezone.now():
                 logout(request)
-                return redirect('/login_page/')
+                return redirect('/login/')
             else:
                 request.session['time_action'] = str(timezone.now())
