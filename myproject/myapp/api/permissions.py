@@ -1,6 +1,6 @@
 from rest_framework import permissions
 from myapp.models import Questionnaires
-from django.contrib.auth.models import User
+from myapp.models import Questionnaires, Comment, MyUser
 
 
 class CommentPermisson(permissions.BasePermission):

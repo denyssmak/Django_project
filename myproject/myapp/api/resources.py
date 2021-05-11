@@ -1,5 +1,4 @@
-from myapp.models import Questionnaires, Comment, MyToken
-from django.contrib.auth.models import User
+from myapp.models import Questionnaires, Comment, MyToken, MyUser
 from myapp.api.serializers import RegisterUserSerializer, QuestionnairesSerializer, CommentSerializer, QuestionnairesListSerializer                         
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -24,7 +23,7 @@ class CustomAuthToken(ObtainAuthToken):
         })
 
 class RegisterUserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = MyUser.objects.all()
     serializer_class = RegisterUserSerializer
     http_method_names = ['get', 'post', 'put', 'patch']
 

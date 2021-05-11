@@ -3,6 +3,8 @@ from myapp.views import QuestionnairesCreateView, AceptQuestionnairesView, Rejec
 from rest_framework import routers
 from myapp.api.resources import RegisterUserViewSet, QuestionnairesViewSet, CommentViewSet, CustomAuthToken, QuestionnairesListViewSet
 from myapp.models import Questionnaires, Comment
+from myproject import settings
+from django.conf.urls.static import static
 
 router = routers.SimpleRouter()
 router.register(r'registers', RegisterUserViewSet)
@@ -28,5 +30,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api-token-auth/', CustomAuthToken.as_view()),
     path('api-auth/', include('rest_framework.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
-
+#+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

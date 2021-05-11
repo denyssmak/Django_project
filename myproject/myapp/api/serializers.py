@@ -1,6 +1,5 @@
 from django.urls import path, include
-from django.contrib.auth.models import User
-from myapp.models import Questionnaires, Comment
+from myapp.models import Questionnaires, Comment, MyUser
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 
@@ -10,11 +9,11 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
+        model = MyUser
         fields = ('id', 'username', 'password', 'password2')
 
     def create(self, validated_data):
-        user = User.objects.create_user(username=validated_data['username'])
+        user = MyUser.objects.create_user(username=validated_data['username'])
         user.set_password(validated_data['password'])
         user.save()
         return user

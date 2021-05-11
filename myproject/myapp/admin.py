@@ -1,10 +1,8 @@
 from django.contrib import admin
-from .models import Questionnaires, Comment
-from django.contrib.auth.models import User
+from .models import Questionnaires, Comment, MyUser
 from django.contrib.auth.admin import UserAdmin
 
 
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(MyUser, UserAdmin)
 admin.site.register(Questionnaires)
 admin.site.register(Comment)

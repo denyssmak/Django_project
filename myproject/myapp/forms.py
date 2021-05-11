@@ -1,7 +1,17 @@
 from django import forms
-from .models import Questionnaires, Comment
+from .models import Questionnaires, Comment, MyUser
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
+class CustomUserCreationForm(UserCreationForm):
+	class Meta:
+		model = MyUser
+		fields = ('username', 'password1', 'password2')
+
+class CustomAuthenticationForm(AuthenticationForm):
+	class Meta:
+		model = MyUser
+		fields = ('username', 'password')
 
 class QuestionnairesCreateForm(forms.ModelForm):
 	class Meta:

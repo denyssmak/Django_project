@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Главная страница</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+<body>
+{% extends 'base.html' %}
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+	<h2 style="color: red;">{{ message|safe }}</h2>
+{% endfor %}
+{% endif %}
+	{% if request.user.is_authenticated %}
+	<h3>{{ request.user }}</h3>
+	<img src="{{user.picture}}" width="85px" height="85px"> 
+		<h4><a href="{% url 'logout_page' %}">выйти</a></h4>
+		<a href="{% url 'questionnaires_create' %}">Cоздать анкету</a><br>
+		{% for questionnaires in questionnaires_list %}
+			{% if questionnaires.repair is not True %}
+				<p>{{ questionnaires }}</p>
+
+
+			<a href="{% url 'questionnaires_update' questionnaires.pk %}">Измененить анкету</a><br>
+			<a href="{% url 'comments' questionnaires.pk %}">Добавить комментарий</a><br>
+			{% if questionnaires.comment_questionnaires.all %}
+				{{questionnaires.comment_questionnaires.all}}
+			{% endif %}
+			{% if request.user.is_superuser %}
+				<form method="post" action="{% url 'acept_questionnaires' questionnaires.pk %}">
+				{% csrf_token %}
+				<input type="submit" value="Принять">	
+				</form>
+				<form method="post" action="{% url 'reject_questionnaires' questionnaires.pk %}">
+				{% csrf_token %}
+				<input type="submit" value="Отклонить">	
+				</form>
+			{% else %}
+			    {% if questionnaires.consideration is False %}
+					<form method="post" action="{% url 'repair_questionnaires' questionnaires.pk %}">
+					{% csrf_token %}
+					<input type="submit" value="Восстоновить">	
+					</form>
+				{% endif %}
+			{% endif %}
+			{% endif %}
+		{% endfor %}
+    {% if page_obj.paginator.num_pages > 1 %}
+        {% for num in page_obj.paginator.page_range %}
+            {% ifequal num page_obj.number %}
+            <span class="current"><b>{{ num }}</b></span>
+            {% else %}
+            <a href="?page={{ num }}"> {{ num }}</a>
+            {% endifequal %} 
+        {% endfor %}
+    {% endif %}
+	{% else %}
+		<h4><a href="{% url 'register_page' %}">регистрация</a></h4>
+		<h4><a href="{% url 'login_page' %}">авторизация</a></h4>
+	{% endif %}
+	{% if request.user.is_superuser %}
+		<h4><a href="{% url 'admin_repair_questionnaires' %}">Восстовить заявки</a></h4>
+	{% endif %}
+{% endblock %}
+</body>
+</html>

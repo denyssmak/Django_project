@@ -2,15 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, View
-from .models import Questionnaires, Comment
+from .models import MyUser, Questionnaires, Comment
 from django.contrib.auth import authenticate, login
-from .forms import QuestionnairesCreateForm, RejectQuestionnairesForm, QuestionnairesUpdateForm, CommentForm, AceptQuestionnairesForm, RepairQuestionnairesForm
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .forms import QuestionnairesCreateForm, CustomUserCreationForm, CustomAuthenticationForm, RejectQuestionnairesForm, QuestionnairesUpdateForm, CommentForm, AceptQuestionnairesForm, RepairQuestionnairesForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.utils import timezone 
+from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class TestUserPermissionUpdate(UserPassesTestMixin):                         
     def test_func(self):                                                       
@@ -20,8 +20,10 @@ class TestUserPermissionUpdate(UserPassesTestMixin):
 class QuestionnairesView(ListView):
     model = Questionnaires
     template_name = 'index.html'
+    
     def get_queryset(self):
         if self.request.user.is_authenticated:
+            self.paginate_by = 3
             if not self.request.user.is_superuser:
                 return Questionnaires.objects.filter(user=self.request.user)
             return Questionnaires.objects.all().filter(status=True)
@@ -34,7 +36,7 @@ class QuestionnairesListView(ListView):
 
 
 
-class QuestionnairesCreateView(CreateView):
+class QuestionnairesCreateView(LoginRequiredMixin, CreateView):
     model = Questionnaires
     form_class = QuestionnairesCreateForm
     template_name = 'questionnaires_create.html'
@@ -53,15 +55,15 @@ class QuestionnairesUpdateView(TestUserPermissionUpdate, UpdateView):
 
 
 class RegisterUserView(CreateView):
-    model = User
-    form_class = UserCreationForm
+    model = MyUser
+    form_class = CustomUserCreationForm
     template_name = 'register.html'
     success_url = reverse_lazy('index')
 
 
 class MyloginView(LoginView):
     template_name = 'login.html'
-    form_class = AuthenticationForm
+    form_class = CustomAuthenticationForm
     success_url = reverse_lazy('index')
     def get_success_url(self):
         return self.success_url
@@ -75,7 +77,7 @@ class MyUserlogoutView(LogoutView):
     next_page = reverse_lazy('index')
 
 
-class CommentView(CreateView):
+class CommentView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'comments.html'
@@ -86,7 +88,7 @@ class CommentView(CreateView):
         object.user = self.request.user
         questionnaires = Questionnaires.objects.get(id=self.kwargs['pk'])
         if questionnaires.status is False:
-            raise ValueError('403')  
+            raise ValueError  
         object.questionnaires = questionnaires
         object.save()
         return super().form_valid(form=form)
